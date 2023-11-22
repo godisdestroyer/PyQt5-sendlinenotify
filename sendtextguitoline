@@ -1,0 +1,61 @@
+import sys
+from PyQt5.QtWidgets import QApplication, QWidget, QTextEdit, QPushButton, QLabel, QVBoxLayout
+from PyQt5.QtGui import QIcon
+import requests
+
+class LineNotifyApp(QWidget):
+    def __init__(self):
+        super().__init__()
+
+        self.setWindowTitle('เขียนข้อความส่งไลน์ V.1')
+        self.setGeometry(100, 100, 400, 310)
+        self.setWindowIcon(QIcon("Lineicon.ico"))
+
+        self.init_ui()
+
+    def init_ui(self):
+        self.text_edit = QTextEdit(self)
+        self.text_edit.setStyleSheet("background-color: gray71; color: #fff; font-family: AngsanaUPC; font-size: 20pt;")
+
+        send_button = QPushButton('ส่งไลน์', self)
+        send_button.clicked.connect(self.send)
+
+        clear_button = QPushButton('ล้างหน้าจอ', self)
+        clear_button.clicked.connect(self.clear)
+
+        close_button = QPushButton('ปิดโปรแกรม', self)
+        close_button.clicked.connect(self.close)
+
+        label = QLabel('godisdestroyer', self)
+        label.setStyleSheet("background-color: white; color: #CC0033; font-family: Arial; font-size: 15pt; font-weight: bold;")
+
+        layout = QVBoxLayout(self)
+        layout.addWidget(self.text_edit)
+        layout.addWidget(send_button)
+        layout.addWidget(clear_button)
+        layout.addWidget(close_button)
+        layout.addWidget(label)
+
+    def send(self):
+        msg = self.text_edit.toPlainText()
+        url = 'https://notify-api.line.me/api/notify'
+        token = 'ใส่   token ไลน์ ของท่าน'
+        headers = {
+            'Authorization': 'Bearer ' + token
+        }
+        data = {
+            'message': msg
+        }
+        requests.post(url, headers=headers, data=data)
+
+    def clear(self):
+        self.text_edit.clear()
+
+    def close(self):
+        self.close()
+
+if __name__ == '__main__':
+    app = QApplication(sys.argv)
+    window = LineNotifyApp()
+    window.show()
+    sys.exit(app.exec_())
